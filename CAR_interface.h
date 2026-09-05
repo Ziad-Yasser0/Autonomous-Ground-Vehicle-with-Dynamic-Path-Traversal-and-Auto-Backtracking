@@ -20,10 +20,10 @@ DLL_Node* previous;
 DLL_Node* head = NULL;
 DLL_Node* tail = NULL;
 
-void AddNodeToLast(void);
+
 void CAR_voidInit(void);
 void CAR_voidMoveForward(void);
 void CAR_voidRotateRightInPlace(void);
 void CAR_voidRotateLefttInPlace(void);
-
+void AddNodeToLast(uint8 Copy_newDirection);
 #endif /* CAR_INTERFACE_H_ */

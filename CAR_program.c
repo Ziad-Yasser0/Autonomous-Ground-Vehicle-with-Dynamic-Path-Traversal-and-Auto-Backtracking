@@ -9,29 +9,33 @@
 #include "defines.h"
 
 #include "DIO_interfce.h"
-
+#include "DIO_Cfg.h"
+#include "DIO_Reg.h"
 #include "DCMOTOR_interface.h"
-#include "CAR_cfg.h"
 #include "CAR_interface.h"
+#include "CAR_cfg.h"
+#include "CAR_private.h"
+#include "DCMOTOR_cfg.h"
+#include "DCMOTOR_private.h"
 
-void AddNodeToLast(uint8 Copy_newDirection){
-		DLL_Node* newNode = (DLL_Node*) malloc(sizeof(DLL_Node));
-	    if(newNode == NULL){
-		printf("Adding Node failed\n");
-		return;
-	    }
-	    newNode->data = Copy_newDirection;
-	    newNode->next = NULL;
-	    newNode->previous = NULL;
-	    if(head == NULL){
-	        head = newNode;
-	        tail = newNode;
-	        return;
-	    }
-	    tail->next = newNode;
-	    newNode->previous = tail;
-	    tail = newNode;
-}
+//void AddNodeToLast(uint8 Copy_newDirection){
+//		DLL_Node* newNode = (DLL_Node*) malloc(sizeof(DLL_Node));
+//	    if(newNode == NULL){
+//		printf("Adding Node failed\n");
+//		return;
+//	    }
+//	    newNode->data = Copy_newDirection;
+//	    newNode->next = NULL;
+//	    newNode->previous = NULL;
+//	    if(head == NULL){
+//	        head = newNode;
+//	        tail = newNode;
+//	        return;
+//	    }
+//	    tail->next = newNode;
+//	    newNode->previous = tail;
+//	    tail = newNode;
+//}
 
 
 void CAR_voidInit(void){

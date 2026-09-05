@@ -6,8 +6,8 @@
 
 
 
-void DCMOTOR_voidInit(void);
-void DCMOTOR_voidMove(uint8 Copy_u8Direction);
-void DCMOTOR_voidStop(void);
+void DCMOTOR_voidInit(uint8 Copy_u8_MOTORPIN0,uint8 Copy_u8_MOTORPIN1);
+void DCMOTOR_voidMove(uint8 Copy_u8Direction,uint8 Copy_u8_MOTORPIN0,uint8 Copy_u8_MOTORPIN1);
+void DCMOTOR_voidStop(uint8 Copy_u8_MOTORPIN0,uint8 Copy_u8_MOTORPIN1);
 
 #endif

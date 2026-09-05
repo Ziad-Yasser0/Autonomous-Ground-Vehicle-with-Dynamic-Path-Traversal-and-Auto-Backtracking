@@ -13,7 +13,17 @@
 #include "DCMOTOR_cfg.h"
 #include "CAR_interface.h"
 #include "CAR_cfg.h"
+#include <util/delay.h>
+
 
 int main(){
-
+	CAR_voidInit();
+	while(1){
+		CAR_voidMoveForward();
+		_delay_ms(2000);
+		CAR_voidRotateRightInPlace();
+		_delay_ms(2000);
+		CAR_voidRotateLefttInPlace();
+		_delay_ms(2000);
+	}
 }

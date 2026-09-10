@@ -71,36 +71,46 @@ void AddNodeToLast(uint8 Copy_newDirection){
 	    tail = newNode;
 }
 
+void CAR_voidRotate180(void) {
+    DCMOTOR_voidMove(DCMOTOR_u8_CCW, CAR_u8RIGHTWHEELPIN1, CAR_u8RIGHTWHEELPIN2);
+    DCMOTOR_voidMove(DCMOTOR_u8_CW, CAR_u8LEFTWHEELPIN1, CAR_u8LEFTWHEELPIN2);
+
+    uint32 turn_180_start = system_tick;
+    while ((system_tick - turn_180_start) < CAR_TURN_180_DURATION_MS) {
+        ULTRASONIC_voidRoutine();
+    }
+    CAR_voidStop();
+}
+
 void CAR_voidNavigateStep(void) {
     uint16 current_fwd_dist = ULTRASONIC_u16GetDistanceFwd();
     uint16 current_rgt_dist = 0;
     uint16 current_lft_dist = 0;
 
-    if (current_fwd_dist != 999 && current_fwd_dist < 15) {
+    if (current_fwd_dist != 999 && current_fwd_dist < CAR_OBSTACLE_DIST_CM) {
         CAR_voidStop();
 
         uint32 stop_start = system_tick;
-        while ((system_tick - stop_start) < 200) {
+        while ((system_tick - stop_start) < CAR_MOMENTUM_STOP_MS) {
             ULTRASONIC_voidRoutine();
         }
 
         current_rgt_dist = ULTRASONIC_u16GetDistanceRight();
         current_lft_dist = ULTRASONIC_u16GetDistanceLeft();
 
-        if (current_rgt_dist != 999 && current_rgt_dist >= 15) {
+        if (current_rgt_dist != 999 && current_rgt_dist >= CAR_OBSTACLE_DIST_CM) {
             CAR_voidRotateRightInPlace();
         }
-        else if (current_lft_dist != 999 && current_lft_dist >= 15) {
+        else if (current_lft_dist != 999 && current_lft_dist >= CAR_OBSTACLE_DIST_CM) {
             CAR_voidRotateLefttInPlace();
         }
         else {
-            // Dead end: All directions blocked, trigger backtracking
             CAR_voidBacktrack();
             return;
         }
 
         uint32 turn_start = system_tick;
-        while ((system_tick - turn_start) < 400) {
+        while ((system_tick - turn_start) < CAR_TURN_90_DURATION_MS) {
             ULTRASONIC_voidRoutine();
         }
     } else {
@@ -111,27 +121,51 @@ void CAR_voidNavigateStep(void) {
 void CAR_voidBacktrack(void) {
     CAR_voidStop();
 
-    // Traverse backward from tail to head
+    uint32 stop_start = system_tick;
+    while ((system_tick - stop_start) < CAR_MOMENTUM_STOP_MS) {
+        ULTRASONIC_voidRoutine();
+    }
+
+    CAR_voidRotate180();
+
+    stop_start = system_tick;
+    while ((system_tick - stop_start) < CAR_MOMENTUM_STOP_MS) {
+        ULTRASONIC_voidRoutine();
+    }
+
     DLL_Node* current = tail;
     while (current != NULL) {
-        // Reverse the recorded action to retrace steps
         if (current->data == CAR_DIR_RIGHT) {
-            CAR_voidRotateLefttInPlace(); // Undo right turn by turning left
+            CAR_voidRotateLefttInPlace();
         } else if (current->data == CAR_DIR_LEFT) {
-            CAR_voidRotateRightInPlace(); // Undo left turn by turning right
+            CAR_voidRotateRightInPlace();
         }
 
-        // Wait briefly to complete the reverse rotation maneuver
-        uint32 step_time = system_tick;
-        while ((system_tick - step_time) < 400) {
+        uint32 turn_time = system_tick;
+        while ((system_tick - turn_time) < CAR_TURN_90_DURATION_MS) {
             ULTRASONIC_voidRoutine();
         }
 
-        // Move to the previous node in the history
-        current = current->previous;
+        CAR_voidMoveForward();
+        while (1) {
+            ULTRASONIC_voidRoutine();
+            uint16 fwd_dist = ULTRASONIC_u16GetDistanceFwd();
+            if (fwd_dist != 999 && fwd_dist < CAR_OBSTACLE_DIST_CM) {
+                CAR_voidStop();
+                break;
+            }
+        }
+
+        stop_start = system_tick;
+        while ((system_tick - stop_start) < CAR_MOMENTUM_STOP_MS) {
+            ULTRASONIC_voidRoutine();
+        }
+
+        DLL_Node* next_node_to_free = current->previous;
+        free(current);
+        current = next_node_to_free;
     }
 
-    // Clear list history after backtracking completes (optional reset)
     tail = NULL;
     head = NULL;
 }

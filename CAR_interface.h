@@ -33,6 +33,7 @@ void CAR_voidStop(void);
 void CAR_voidNavigateStep(void);
 void CAR_voidBacktrack(void);
 void AddNodeToLast(uint8 Copy_newDirection);
+void CAR_voidRotate180(void);
 
 
 #endif /* CAR_INTERFACE_H_ */

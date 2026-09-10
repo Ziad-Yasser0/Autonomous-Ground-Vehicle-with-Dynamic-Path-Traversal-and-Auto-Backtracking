@@ -1,27 +1,30 @@
-/*
- * main.c
- *
- *  Created on: Sep 5, 2026
- *      Author: sayba
- */
 #include "STD_TYPES.h"
 #include "BIT_MATH.h"
-#include "DIO_Interfce.h"
-#include "DIO_Cfg.h"
-#include "DCMOTOR_cfg.h"
-#include "CAR_cfg.h"
+#include "TIMER_interface.h"
+#include "DIO_interfce.h"
+#include "GIE_interface.h"
+#include "US_interface.h"
 #include "CAR_interface.h"
-#include <util/delay.h>
 
+volatile uint32 system_tick = 0;
 
-int main(){
-	CAR_voidInit();
-	while(1){
-		CAR_voidMoveForward();
-		_delay_ms(2000);
-		CAR_voidRotateRightInPlace();
-		_delay_ms(2000);
-		CAR_voidRotateLefttInPlace();
-		_delay_ms(2000);
-	}
+void IncrementSystemTick(void) {
+    system_tick++;
+}
+
+int main(void) {
+    TIMER_voidTimer0Init();
+    TIMER_voidTimer0SetCompareValue(124);
+    TIMER_voidTimer0SetCallBack(IncrementSystemTick);
+
+    ULTRASONIC_voidInit();
+    ICU_voidSetCallBack(ULTRASONIC_voidIcuCallback);
+
+    CAR_voidInit();
+    GIE_voidEnabled();
+
+    while (1) {
+        ULTRASONIC_voidRoutine();
+        CAR_voidNavigateStep();
+    }
 }

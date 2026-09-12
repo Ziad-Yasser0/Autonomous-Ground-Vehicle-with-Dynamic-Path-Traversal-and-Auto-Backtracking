@@ -18,5 +18,6 @@
 #define CAR_MOMENTUM_STOP_MS       200u  // Pause duration to kill physical momentum
 #define CAR_TURN_90_DURATION_MS    400u  // Time to complete a 90-degree turn
 #define CAR_TURN_180_DURATION_MS   800u  // Time to complete a 180-degree turn
+#define CAR_CENTERING_TOLERANCE_CM   3u  // Centering deadband in cm
 
 #endif /* CAR_CFG_H_ */

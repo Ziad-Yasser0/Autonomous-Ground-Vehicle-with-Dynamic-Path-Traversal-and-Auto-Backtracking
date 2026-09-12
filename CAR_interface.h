@@ -30,6 +30,7 @@ void CAR_voidRotateLefttInPlace(void);
 void AddNodeToLast(uint8 Copy_newDirection);
 void CAR_voidStop(void);
 
+void CAR_voidDriveCentered(void);
 void CAR_voidNavigateStep(void);
 void CAR_voidBacktrack(void);
 void AddNodeToLast(uint8 Copy_newDirection);
